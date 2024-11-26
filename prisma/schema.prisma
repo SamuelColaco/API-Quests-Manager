@@ -22,5 +22,33 @@ model Users{
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  teams TeamsMembers[]
+
+
   @@map("Users")
+}
+
+model Teams {
+  id String @id @default(uuid())
+  name String
+  description String @default("Não tem descrição")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  members TeamsMembers[]
+
+  @@map("Teams")
+}
+
+model TeamsMembers{
+  id String @id @default(uuid())
+  userId String @map("user_id")
+  teamId String @map("team_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user Users @relation(fields: [userId], references: [id])
+  team Teams @relation(fields: [teamId], references: [id])
+
+  @@map("TeamsMembers")
 }
