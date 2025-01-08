@@ -13,6 +13,8 @@ export class UserControllers{
         return res.status(200).json(users.length > 0 ? users : "Não tem usuários cadastrados")
     }
 
+
+    
     async create(req: Request, res: Response, next: NextFunction){
 
         try {
