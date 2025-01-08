@@ -9,5 +9,6 @@ userRoutes.get("/", userController.index)
 userRoutes.post("/user", userController.create)
 userRoutes.put("/user/:id", userController.update)
 
+
 export { userRoutes }
 
