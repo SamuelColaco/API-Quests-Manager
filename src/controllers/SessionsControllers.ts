@@ -4,6 +4,8 @@ import z from "zod"
 import { compare } from "bcrypt"
 import { prisma } from "../prisma"
 import { AppError } from "../utils/AppError"
+import { authConfig } from "../config/auth"
+import { sign } from "jsonwebtoken"
 
 export class SessionsControllers{
 
@@ -31,8 +33,14 @@ export class SessionsControllers{
             if(!passwordExist){
                 throw new AppError("Email e/ou senha errados")
             }
-            
-            res.status(200).json()
+
+            const { secret, expiresIn } = authConfig.jwt
+            const token = sign({},secret,{
+                expiresIn,
+                subject: userExist.id
+            })
+
+            res.status(200).json({ token: token })
             
         } catch (error) {
             next(error)
