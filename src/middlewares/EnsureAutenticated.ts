@@ -6,6 +6,11 @@ import { authConfig } from "../config/auth"
 
 
 export function EnsureAutenticated(req: Request, res: Response, next: NextFunction){
+
+    interface TokenPayLoad {
+        role: string
+        sub: string
+    }
     
     const authHeader = req.headers.authorization
 
@@ -15,10 +20,11 @@ export function EnsureAutenticated(req: Request, res: Response, next: NextFuncti
 
     const authHeaderToken = authHeader.slice(7)
 
-     const { sub: userId } = verify(authHeaderToken, authConfig.jwt.secret)
+     const { sub: userId, role } = verify(authHeaderToken, authConfig.jwt.secret) as TokenPayLoad
 
      req.user = {
-        id: String(userId)
+        id: String(userId),
+        role
      }
 
     return next()
