@@ -27,7 +27,6 @@ export class TasksControllers{
             
             const bodySchema = z.object({
                 title: z.string().min(6).trim(),
-                description: z.string()
             })
 
             bodySchema.parse(req.body)
@@ -36,9 +35,9 @@ export class TasksControllers{
                 teamId: z.string().uuid()
             })
 
-            paramSchema.parse(req.user)
+            paramSchema.parse(req.params)
 
-            const teamExist = await prisma.teams.findFirst({ where: { id: teamId}})
+            const teamExist = await prisma.teams.findFirst({ where: { id: teamId }})
 
             if(!teamExist){
                 throw new AppError("Esse time não existe")
@@ -78,7 +77,7 @@ export class TasksControllers{
             }
 
             await prisma.tasks.update({ where : { id }, data: { ...all }})
-            
+
             res.status(200).json()
             
         } catch (error) {
