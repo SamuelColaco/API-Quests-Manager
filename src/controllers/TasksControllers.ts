@@ -1,7 +1,7 @@
 
 import { Request, Response, NextFunction } from "express"
 import { prisma } from "../prisma"
-import z from "zod"
+import z, { map } from "zod"
 import { AppError } from "../utils/AppError"
 
 export class TasksControllers{
@@ -84,5 +84,47 @@ export class TasksControllers{
             next(error)
         }
 
+    }
+
+    async indexForId(req: Request, res: Response, next: NextFunction){
+
+        try {
+
+            const { teamId } = req.params
+
+            const paramSchema = z.object({
+                teamId: z.string().uuid()
+            })
+
+            paramSchema.parse(req.params)
+
+            const userId = String(req.user?.id)
+
+            const teamExist = await prisma.teams.findFirst({ where: { id: teamId }})
+
+            if(!teamExist){
+                throw new AppError("Esse time não existe")
+            }
+
+            const teamMembers = await prisma.teamsMembers.findMany({where: { teamId }})
+
+            if(!teamMembers){
+                throw new AppError("Não tem membros nesse time")
+            }
+            
+            for (let i = 0; i < teamMembers.length; i++) {
+                if(userId === teamMembers[i].userId){
+                    const tasks = await prisma.tasks.findMany({ where : { teamId }})
+                    res.status(200).json(tasks.length > 0 ? tasks : "Não tem tarefas")
+                }
+            }
+
+            throw new AppError("Esse usuário não pertence a tal time")
+
+
+            
+        } catch (error) {
+            next(error)
+        }
     }
 }

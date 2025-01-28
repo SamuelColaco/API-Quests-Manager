@@ -10,5 +10,6 @@ const tasksControllers = new TasksControllers()
 tasksRoutes.get("/tasks", EnsureAutenticated, VerifyAuthorization(["member","admin"]), tasksControllers.index)
 tasksRoutes.post("/tasks/:teamId", EnsureAutenticated, VerifyAuthorization(["member", "admin"]), tasksControllers.create)
 tasksRoutes.put("/tasks/:id", EnsureAutenticated, VerifyAuthorization(["member", "admin"]), tasksControllers.update)
+tasksRoutes.get("/tasks/:teamId", EnsureAutenticated, tasksControllers.indexForId)
 
 export { tasksRoutes }
