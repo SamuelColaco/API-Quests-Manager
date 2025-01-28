@@ -13,6 +13,18 @@ enum roles {
   member
 }
 
+enum status {
+  pending
+  in_progress
+  completed
+}
+
+enum priority {
+  high
+  medium
+  low
+}
+
 model Users{
   id String @id @default(uuid())
   name String
@@ -23,6 +35,7 @@ model Users{
   updatedAt DateTime @updatedAt @map("updated_at")
 
   teams TeamsMembers[]
+  tasks Tasks[]
 
 
   @@map("Users")
@@ -36,6 +49,7 @@ model Teams {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   members TeamsMembers[]
+  tasks Tasks[]
 
   @@map("Teams")
 }
@@ -51,4 +65,20 @@ model TeamsMembers{
   team Teams @relation(fields: [teamId], references: [id])
 
   @@map("TeamsMembers")
+}
+
+model Tasks{
+  id String @id @default(uuid())
+  title String
+  description String @default("Não tem descrição")
+  status status @default(pending)
+  priority priority @default(medium)
+  assignedTo String @map("assigned_to")
+  teamId String @map("team_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user Users @relation(fields: [assignedTo], references: [id])
+  team Teams @relation(fields: [teamId], references: [id])
+
 }
