@@ -127,4 +127,39 @@ export class TasksControllers{
             next(error)
         }
     }
+
+     async updateForId(req: Request, res: Response, next: NextFunction){
+        try {
+
+            const { id } = req.params
+
+            const { ...all } = req.body
+
+            const user = String(req.user?.id)
+
+            const paramSchema = z.object({
+                id: z.string().uuid()
+            })
+            
+            paramSchema.parse(req.params)
+
+            const taskExist = await prisma.tasks.findFirst({where: { id }})
+
+            if(!taskExist){
+                throw new AppError("Essa tarefa não existe")
+            }
+
+            if(user !== taskExist.assignedTo){
+                throw new AppError("Essa tarefa você não pode editar")
+            }
+
+            await prisma.tasks.update({where: { id }, data: { ...all}})
+
+            res.status(200).json()
+            
+        } catch (error) {
+            next(error)
+        }
+
+    }
 }

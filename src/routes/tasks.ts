@@ -11,5 +11,6 @@ tasksRoutes.get("/tasks", EnsureAutenticated, VerifyAuthorization(["member","adm
 tasksRoutes.post("/tasks/:teamId", EnsureAutenticated, VerifyAuthorization(["member", "admin"]), tasksControllers.create)
 tasksRoutes.put("/tasks/:id", EnsureAutenticated, VerifyAuthorization(["member", "admin"]), tasksControllers.update)
 tasksRoutes.get("/tasks/:teamId", EnsureAutenticated, tasksControllers.indexForId)
+tasksRoutes.put("/tasks/:id", EnsureAutenticated, tasksControllers.updateForId)
 
 export { tasksRoutes }
