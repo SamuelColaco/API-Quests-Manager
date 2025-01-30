@@ -26,6 +26,7 @@ export class TeamControllers{
         await prisma.teams.create({ data: { name, description }})
 
         res.status(201).json()
+        
 
     }
 
